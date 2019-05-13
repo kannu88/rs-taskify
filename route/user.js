@@ -244,7 +244,7 @@ router.post('/authenticate',(req,res)=>
             }
             else{
                 const payload = {
-                    admin:user.admin
+                    email:user.email
                 };
                 var token = jwt.sign(payload,'21JHJKHIUKJH9O8IHINK',{
                     expiresIn:'24h'
@@ -252,7 +252,8 @@ router.post('/authenticate',(req,res)=>
                 res.json({
                     success:true,
                     message:"enjoy your token",
-                    token:token
+                    token:token,
+                    
                 })
             }
         }
