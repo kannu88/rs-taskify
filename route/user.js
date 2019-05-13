@@ -1,5 +1,7 @@
 var express = require('express')
 var router = express.Router()
+var app = express()
+var jwt = require('jsonwebtoken');
 
 console.log("user route called")
 
@@ -210,5 +212,51 @@ router.get('/paging',(req,res)=>
             })
         }
     })
+})
+
+
+router.post('/authenticate',(req,res)=>
+{
+    User.findOne({name:req.body.name},(err,user)=>
+    {
+        if(err)
+        {
+            res.json({
+                success:false,
+                message:"error in name"
+            })
+        }
+        if(!user)
+        {
+            res.json({
+                success:false,
+                message:"user not found"
+            })
+        }
+        else if(user)
+        {
+            if(user.password!==req.body.password)
+            {
+                res.json({
+                    success:false,
+                    message:"authentication failed password is incorrect"
+                })
+            }
+            else{
+                const payload = {
+                    admin:user.admin
+                };
+                var token = jwt.sign(payload,'21JHJKHIUKJH9O8IHINK',{
+                    expiresIn:'24h'
+                })
+                res.json({
+                    success:true,
+                    message:"enjoy your token",
+                    token:token
+                })
+            }
+        }
+
+    });
 })
 module.exports=router;

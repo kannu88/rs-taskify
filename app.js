@@ -1,6 +1,6 @@
 var express = require('express')
 var app = express()
-
+var jwt = require('jsonwebtoken');
 var userRoutes = require('./route/user');
 var taskRoutes = require('./route/task');
 var commentRoutes = require('./route/comment')
@@ -8,9 +8,10 @@ var projectRoutes = require('./route/project')
 var moduleRoutes = require('./route/module')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+var config = require('./model/config'); // get our config file
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-
+app.set('superSecret', config.secret);
 
 app.use('/user',userRoutes);
 app.use('/task',taskRoutes);
