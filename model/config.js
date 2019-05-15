@@ -1,5 +1,5 @@
 module.exports = {
 
-    'secret': 'ilovescotchyscotch'
+    'secret': '21JHJKHIUKJH9O8IHINK'
 
 };

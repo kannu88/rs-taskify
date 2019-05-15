@@ -7,6 +7,7 @@ var localSchema = new Schema({
     phoneNo:Number,
     password:String,
     age:String,
+    DOB:Date,
     views:{type:Number,default:0}
 });
 

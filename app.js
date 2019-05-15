@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
     if (token) {
   
       // verifies secret and checks exp
-      jwt.verify(token,'21JHJKHIUKJH9O8IHINK', function(err, decoded) {       
+      jwt.verify(token,config.secret, function(err, decoded) {       
           if (err) {
           return res.json({ 
               success: false, 
