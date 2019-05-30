@@ -14,7 +14,7 @@ var smtpTransport = nodemailer.createTransport({
     }
 });
 var jwt = require('jsonwebtoken');
-
+var ls = require('local-storage');
 console.log("user route called")
 
 var User = require('../model/userSchema')
@@ -32,13 +32,15 @@ router.post('/insert', (req,res)=>
     console.log("user inserted data")
     var userData = req.body.userData;
     newUser.name = userData.name;
+    console.log(req.body.userData);
     if(!userData.name)
-    {
+    {   
         return res.status(400).json({
             success:false,
             message: 'Please enter name also'
         })
-    }
+    } 
+    
     newUser.email = userData.email;
     if(!userData.email)
     {
@@ -50,13 +52,7 @@ router.post('/insert', (req,res)=>
     
     newUser.profilePicture = userData.profilePicture;
     newUser.phoneNo = userData.phoneNo;
-    if(!userData.phoneNo)
-    {
-        return res.status(400).json({
-            success:false,
-            message: 'Please enter phone number also'
-        })
-    }
+    
     newUser.password = passwordHash.generate(userData.password);
     if(!userData.password)
     {
@@ -67,7 +63,7 @@ router.post('/insert', (req,res)=>
     }
     newUser.age = userData.age;
     newUser.DOB = userData.DOB;
-
+    
     newUser.save((err,doc)=>
     {
         if(err)
@@ -76,6 +72,7 @@ router.post('/insert', (req,res)=>
                 success:false,
                 message:"data not saved"
             })
+            
         }
 
         else{
@@ -231,8 +228,8 @@ router.get('/paging',(req,res)=>
 
 router.post('/login',(req,res)=>
 {
-    User.findOne({name:req.body.name},(err,user)=>
-    {
+    User.findOne({email:req.body.userData.email},(err,user)=>
+    { 
         if(err)
         {
             res.json({
@@ -247,27 +244,31 @@ router.post('/login',(req,res)=>
                 message:"user not found"
             })
         }
-        else if(user)
+        if(user)
         {
-            if(passwordHash.verify(req.body.password,user.password))
+            
+            if(passwordHash.verify(req.body.userData.password,user.password))
             {
-                res.json({
-                    success:false,
-                    message:"authentication failed password is incorrect"
-                })
-            }
-            else{
                 const payload = {
                     email:user.email
                 };
                 var token = jwt.sign(payload,"21JHJKHIUKJH9O8IHINK",{
                     expiresIn:'24h'
                 })
+                ls.set('token',token);
+                console.log(ls.get('token'));
                 res.json({
                     success:true,
                     message:"enjoy your token",
                     token:token,
                     
+                })
+            }
+            else{
+               
+                res.json({
+                    success:false,
+                    message:"authentication failed password is incorrect"
                 })
             }
         }
@@ -277,10 +278,10 @@ router.post('/login',(req,res)=>
 
 router.post('/resetpassword', (req,res)=>
 {
-    var oldPassword = req.body.oldPassword;
-    var newPassword = passwordHash.generate(req.body.newPassword)
+    var oldPassword = req.body.userData.oldPassword;
+    var newPassword = passwordHash.generate(req.body.userData.newPassword)
 
-    User.findOne({email:req.body.email},(err,user)=>
+    User.findOne({email:req.body.userData.email},(err,user)=>
     {
         if(err)
         {
@@ -332,7 +333,7 @@ router.post('/resetpassword', (req,res)=>
 
 router.get('/forgotPassword',(req,res)=>
 {  var fPassword = forgotPassword();
-
+        console.log(req.query.email)
     User.findOne({email:req.query.email},(err,doc)=>
     {
         if(err)
@@ -347,8 +348,8 @@ router.get('/forgotPassword',(req,res)=>
             fPassword.email = doc.email;
             fPassword.otp = otp;
             var mailOptions={
-                to : req.body.to,
-                subject : req.body.subject,
+                to : fPassword.email,
+                subject : "Password change",
                 text :"otp:" + otp
             }
             console.log(mailOptions);
@@ -383,18 +384,19 @@ router.get('/forgotPassword',(req,res)=>
     )
 })
 
-router.post('/forgotPassword/:otp', (req,res)=>
-{   var newPassword1 = req.body.newPassword
-    forgotPassword.findOne({otp:req.params.otp},(err,doc)=>
-    {
+router.post('/forgotPassword', (req,res)=>
+{   var newPassword1 = req.body.userData.newPassword
+    forgotPassword.findOne({otp:req.body.userData.otp},(err,doc)=>
+    {   
         if(err)
-        {
+        {   
             res.status.json({
                 success:false,
                 message:"error in the link"
             })
         }
         else if(doc){
+            
             User.updateOne({email:doc.email},{$set:{
                 password:passwordHash.generate(newPassword1)
             }},{},(err,doc1)=>
@@ -459,5 +461,26 @@ router.post('/sendmail',function(req,res){
       
 
       )
+  })
+
+  //last day data
+
+  router.get('/lastday',(req,res)=>
+  { //console.log(new Date(new Date().setDate(new Date().getDate()-1)))
+      User.find({DOB:{$gte:new Date(new Date().setDate(new Date().getDate()-2))}},(err,doc)=>
+      { if(err){
+          res.status(400).json({
+              success:false,
+              message:"not found"
+          })
+        }
+        else{
+            res.json({
+                success:true,
+                message:"data found",
+                doc:doc
+            })
+        }
+      })
   })
 module.exports=router;

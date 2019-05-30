@@ -12,7 +12,7 @@ var Task = require('../model/taskSchema');
 router.post('/insert', (req,res)=>
 {
     var newTask = Task()
-    var taskData = req.body.taskData;
+    var taskData = req.body.userData;
     newTask.title = taskData.title;
     if(!taskData.title)
     {
@@ -66,7 +66,7 @@ router.post('/insert', (req,res)=>
     newTask.moduleId = taskData.moduleId;
     newTask.commentId = taskData.commentId;
     newTask.tags = taskData.tags;
-    newTask.client = taskData.client;
+    newTask.clientId = taskData.clientId;
 
     newTask.save((err,doc)=>
     {

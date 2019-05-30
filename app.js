@@ -1,23 +1,36 @@
 var express = require('express')
 var app = express()
 var jwt = require('jsonwebtoken');
+var cors = require('cors');
+
 var userRoutes = require('./route/user');
 var taskRoutes = require('./route/task');
 var commentRoutes = require('./route/comment')
 var projectRoutes = require('./route/project')
 var moduleRoutes = require('./route/module')
+var learnRoutes = require('./route/learn')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 var config = require('./model/config'); // get our config file
 app.use(bodyParser.urlencoded({extended:true}));
+
+app.use(cors({
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'exposedHeaders': ['sessionId'],
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false
+}));
 app.use(bodyParser.json());
 app.set('superSecret', config.secret);
 
 app.use('/user',userRoutes);
+app.use(express.static('public'));
+
 app.use(function(req, res, next) {
 
     // check header or url parameters or post parameters for token
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    var token = req.body.token || req.query.token || req.headers['authorization'];
   
     // decode token
     if (token) {
@@ -48,6 +61,8 @@ app.use(function(req, res, next) {
   
     }
   });
+  app.use('/learn',learnRoutes);
+ 
 app.use('/task',taskRoutes);
 app.use('/comment',commentRoutes);
 app.use('/project',projectRoutes);

@@ -1,0 +1,109 @@
+<button type="button" ng-controller='listControllerpopup'  id="myBtn"class="btn btn-outline-primary"><i class="fa fa-plus"></i>&nbsp; Add New Project</button>
+<div class="row">
+           <div id="myModal" class="modal col-lg-12">
+
+<!-- Modal content -->
+
+<div class="col-lg-9" style="float: center;">
+                   <div class="card" >
+                       <form name="taskDetail"  ng-controller="taskController" ng-submit="createTask()">
+                       <div class="card-header"><strong>Create Task</strong><span class="close">&times;</span></div>
+                       <div class="card-body card-block">
+                           <div class="form-group">
+                               <label for="company" class=" form-control-label"   >Task Name</label>
+                               <input type="text" name="title" id="company" placeholder="Enter your Task name" ng-model="userData.title" class="form-control" required>
+                               <span style="color:red;" ng-show="taskDetail.title.$dirty && taskDetail.title.$invalid"></span>
+                               <span style="color: red;" ng-show="taskDetail.title.$touched && taskDetail.title.$error.required">Title required</span>
+                           </div>
+                           <div class="form-group">
+                               <label for="vat" class=" form-control-label">Client Name</label>
+                               <input type="text" id="vat" placeholder="Enter Client Name" ng-model= "userData.clientId" required name="client" class="form-control">
+                               <span style="color:red;" ng-show="taskDetail.client.$dirty && taskDetail.client.$invalid"></span>
+                               <span style="color:red;" ng-show="taskDetail.client.$touched && taskDetail.client.$error.required">client required</span>
+                           </div>
+                           <div class="form-group">
+                                <label for="vat" class=" form-control-label">Project Name</label>
+                                <input type="text" id="vat" placeholder="Enter Project Name" ng-model= "userData.projectId" required name="project" class="form-control">
+                                <span style="color:red;" ng-show="taskDetail.project.$dirty && taskDetail.project.$invalid"></span>
+                                <span style="color:red;" ng-show="taskDetail.project.$touched && taskDetail.project.$error.required">client required</span>
+                            </div>
+                           <div class="form-group">
+                               <label for="street" class=" form-control-label">Description</label>
+                               <input type="text" id="street" placeholder="Enter Description of Project" name="description" ng-model="userData.description" required class="form-control">
+                               <span style="color:red" ng-show="taskDetail.description.$dirty && taskDetail.description.$invalid"></span>
+                               <span style="color:red" ng-show="taskDetail.description.$touched && task.description.$error.required">Description Required</span>
+
+                           </div>
+                           <button type="submit" class="btn btn-outline-primary">Create Task</button>
+                       </div>
+                       
+
+                      
+
+
+
+                       </form>
+                   </div>
+                   
+
+               </div>
+
+</div>
+</div>
+
+    <div>
+            <div class="orders">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="box-title">Tasks</h4>
+                                </div>
+                                <div class="card-body--">
+                                    <div class="table-stats order-table ov-h">
+                                        <table class="table ">
+                                            <thead>
+                                                <tr>
+                                                    <th class="serial">S.No</th>
+                                                    
+                                                    
+                                                    <th>Title</th>
+                                                    <th>ProjectID</th>
+                                                    <th>Priority</th>
+                                                    <th>Client</th>
+                                                    <th>Comment</th>
+                                                    <th>Status</th>
+                                                    <th>Modify</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="user in users">
+                                                    <td class="serial">{{$index+1}}</td>
+                                                    
+                                                    
+                                                    <td>  <span class="name">{{user.title}}</span> </td>
+                                                    <td> <span class="product">{{user.projectId}}</span> </td>
+                                                    <td> <span class="product">{{user.priority}}</span> </td>
+                                                    <td><span class="count">{{user.clientId}}</span></td>
+                                                    <td>
+                                                            <span class="count">{{user.comment}}</span>
+                                                    </td>
+                                                    <td><span class="count">{{user.status}}</span></td>
+                                                    <td>
+                                               
+                                                            <a href=""><button class="editButton btn btn-primary" ng-click="editPopup()">Edit</button></a>
+                                                          </td>
+                                                </tr>
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div> <!-- /.table-stats -->
+                                </div>
+                            </div> <!-- /.card -->
+                        </div>  <!-- /.col-lg-8 -->
+
+                    </div>
+                </div>
+
+    </div>
+    

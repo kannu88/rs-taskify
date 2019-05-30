@@ -17,6 +17,7 @@ router.post('/insert', (req,res)=>
    // console.log(req)
     var userData = req.body.userData;
     newUser.title = userData.title;
+    
     if(!userData.title)
     {
         return res.status(400).json({
@@ -62,6 +63,7 @@ router.post('/insert', (req,res)=>
         }
 
         else{
+            console.log(req.body.userData);
             res.json({
                 success:true,
                 message:"data saved",
@@ -73,6 +75,7 @@ router.post('/insert', (req,res)=>
 
 router.put('/update/:id', (req,res)=>
 {    var userData = req.body.userData;
+    
     Project.update({_id:req.params.id},{
         $set:{title:userData.title,
             status:userData.status,

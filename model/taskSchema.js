@@ -12,7 +12,7 @@ var localSchema = new Schema({
     moduleId:String,
     commentId:String,
     tags:String,
-    client:String
+    clientId:String
 
 })
 
