@@ -64,7 +64,7 @@ router.post('/insert', (req,res)=>
 })
 
 router.put('/update/:id', (req,res)=>
-{    var moduleData = req.body.moduleData;
+{    var moduleData = req.body.userData;
     Module.update({_id:req.params.id},{
         $set:{title:moduleData.title,
             description:moduleData.description,

@@ -23,6 +23,14 @@ mainApp.config(['$routeProvider',function($routeProvider){
         templateUrl:'updateProject.html',
         controller:'listController'
     })
+    .when('/updateModule/:id',{
+        templateUrl: 'updateModule.html',
+        controller:'moduleController'
+    })
+    .when('/updateTask/:id1',{
+        templateUrl:'updateTask.html',
+        controller:'taskController'
+    })
     .otherwise({
         redirectTo:'/'
     })
@@ -69,8 +77,8 @@ mainApp.controller('listController',function($scope,$http,$routeParams){
 $http.get(url1,config).then(function(response){
     
     if(response.data.success===true){
-        $scope.data1 = response.data.doc;
-        console.log($scope.data1);
+        $scope.userData = response.data.doc;
+        console.log($scope.userData);
     }
 })}
 
@@ -144,24 +152,93 @@ $http.get(url,config).then(function(response){
  
 })
 
-mainApp.controller('moduleController',function($scope,$http){
+mainApp.controller('moduleController',function($scope,$http,$routeParams){
     $scope.msg="this is the Module";
-    var url="http://localhost:3000/module/find/5cd6804c33eaf51dbc1efc1d";
+    var url="http://localhost:3000/module/paging";
     var config = {
     headers:{
         'authorization':localStorage.getItem('token')
     }
 }
+$scope.data1={};
+
+if($routeParams){
+var url1="http://localhost:3000/module/find/"+$routeParams.id;
+$http.get(url1,config).then(function(response){
+
+if(response.data.success===true){
+    $scope.userData = response.data.doc;
+    console.log($scope.userData);
+}
+})}
+//module update
+$scope.editModule = function(){
+    var url = "http://localhost:3000/module/update/"+$routeParams.id;
+    var config = {
+        headers:{
+            'authorization':localStorage.getItem('token')
+        }
+    }
+    
+    $http.put(url,{userData:$scope.userData},config).then(function(response){
+        console.log(response);
+        if(response.data.success===true){
+            window.alert("module Updated Successfully");
+            window.location.href='homePage.html#/module';
+        }
+        else{
+            window.alert("Project is not updated successfully");
+        }
+    })
+    
+    }
 $http.get(url,config).then(function(response){
     $scope.users = response.data.doc;
-    console.log(response);
+    console.log($scope.users);
     
 })
 
     
 })
-mainApp.controller('taskController',function($scope,$http){
+mainApp.controller('taskController',function($scope,$http,$routeParams){
     $scope.msg="This is task";
+    var config = {
+        headers:{
+            'authorization':localStorage.getItem('token')
+        }
+    }
+    if($routeParams){
+        console.log($routeParams.id1)
+        var url1="http://localhost:3000/task/find/"+$routeParams.id1;
+        $http.get(url1,config).then(function(response){
+        
+        if(response.data.success===true){
+            $scope.userData = response.data.doc;
+            console.log($scope.userData);
+        }
+        })}
+        //update task
+        $scope.editTask = function(){
+            var url = "http://localhost:3000/task/update/"+$routeParams.id1;
+            var config = {
+                headers:{
+                    'authorization':localStorage.getItem('token')
+                }
+            }
+            
+            $http.put(url,{userData:$scope.userData},config).then(function(response){
+                console.log(response);
+                if(response.data.success===true){
+                    window.alert("Task Updated Successfully");
+                    window.location.href='homePage.html#/task';
+                }
+                else{
+                    window.alert("task is not updated successfully");
+                }
+            })
+            
+            }
+
     console.log(localStorage.getItem('token'));
     var url="http://localhost:3000/task/paging";
     var config = {
@@ -215,7 +292,7 @@ $scope.createTask =   function(){
 
 $scope.Logout = function()
 {
-    window.location.href="index.html";
+    window.location.href="login.html";
     window.localStorage.clear();
 }
 })

@@ -93,7 +93,7 @@ router.post('/insert', (req,res)=>
 
 router.put('/update/:id',(req,res)=>
 {
-    var taskData = req.body.taskData;
+    var taskData = req.body.userData;
     Task.update({_id:req.params.id},
         {$set:{title:taskData.title,
         description:taskData.description,
