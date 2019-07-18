@@ -6,7 +6,8 @@ var Comment = require('../model/commentSchema');
 router.post('/insert',(req,res)=>
 {
     var newComment = Comment();
-    var commentData = req.body.commentData;
+    var commentData = req.body.userData;
+    
     newComment.body = commentData.body;
     if(!commentData.body)
     {
@@ -15,16 +16,16 @@ router.post('/insert',(req,res)=>
             message: 'Please enter body also'
         })
     }
-    newComment.userId = commentData.userId;
-    if(!commentData.userId)
+    newComment.user = commentData.user;
+    if(!commentData.user)
     {
         return res.status(400).json({
             success:false,
             message: 'Please enter user ID also'
         })
     }
-    newComment.taskId = commentData.taskId;
-    if(!commentData.taskId)
+    newComment.task = commentData.task;
+    if(!commentData.task)
     {
         return res.status(400).json({
             success:false,
@@ -57,8 +58,8 @@ router.put('/update/:id', (req,res)=>
     var commentData = req.body.commentData;
     Comment.update({_id:req.params.id},{$set:{
         body:commentData.body,
-        taskId:commentData.taskId,
-        userId:commentData.userId
+        task:commentData.task,
+        user:commentData.user
     }},{},(err,doc)=>
     {  if(err)
         {
@@ -78,11 +79,11 @@ router.put('/update/:id', (req,res)=>
 })
 
 router.get('/find/:id', (req,res)=>
-{
-    Comment.find({_id:req.params.id},(err,doc)=>
+{   
+    Comment.find({_id:req.params.id}).populate('user').populate('task').exec((err,doc)=>
     {
         if(err)
-        {
+        {   
             res.status(400).json({
                 success:false,
                 message:"Not found"
@@ -102,9 +103,7 @@ router.get('/find/:id', (req,res)=>
 
 router.get('/paging',(req,res)=>
 {
-    var search = req.query.search;
-    var body = req.query.body;
-    var taskId = req.query.taskId;
+    var task = req.query.task;
     var sort = req.query.sort;
 
     var pageNo = parseInt(req.query.pageNo);
@@ -115,10 +114,7 @@ router.get('/paging',(req,res)=>
     skipCondition.limit = size;
 
     var query ={};
-    if(search){
-        query={'$or':[{userId:new RegExp(search,'i')},
-        {body:new RegExp(body,'i')},{taskId:new RegExp(taskId,'i')}]}
-    }
+    query={task:task}
 
     if(sort)
     {
@@ -140,7 +136,7 @@ router.get('/paging',(req,res)=>
         })
     }
   
-    Comment.find(query,{},skipCondition,(err,doc)=>
+    Comment.find(query,{},skipCondition).populate('user').populate('task').exec((err,doc)=>
     {
         if(err)
         {
@@ -159,5 +155,22 @@ router.get('/paging',(req,res)=>
     })
 })
 
+router.get('/recentcomment',(req,res)=>{
+  Comment.find({}).sort({_id:-1}).limit(5).populate('user').populate('task').exec((err,doc)=>{
+      if(err){
+          res.status(400).json({
+              success:false,
+              message:'not found any record'
+          })      }
+
+          else{
+              res.json({
+                  success:true,
+                  message:'Comment found',
+                  doc:doc
+              })
+          }
+  })  
+})
 
 module.exports =router;

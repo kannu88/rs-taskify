@@ -2,7 +2,7 @@
 var express = require('express')
 var router = express.Router();
 var multer = require('multer');
-var upload      = multer({ dest: 'route/',fileFilter:function(req,file,cb){
+var upload      = multer({ dest: 'uploads/',fileFilter:function(req,file,cb){
     console.log('file is',file)
     cb(null,true);
 }
@@ -10,14 +10,14 @@ var upload      = multer({ dest: 'route/',fileFilter:function(req,file,cb){
 
 console.log("learn added");
 router.post('/upload',upload.single('abc'),(req,res)=>{
-    console.log(req.body)
+    console.log(req.file.filename)
 res.json({
     success:true,
-    message:"done"
+    message:"done",
+    
 })
 })
 //uploading multiple files....
-
 router.post('/uploadmultiple',upload.array('abc',12),(req,res)=>{
     console.log(req.body)
 res.json({

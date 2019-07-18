@@ -1,7 +1,15 @@
 <style>
         body {font-family: Arial, Helvetica, sans-serif;}
         * {box-sizing: border-box;}
-        
+         .has-error {
+    color: red;
+    border: 1px solid red;
+}
+
+.has-success {
+    color: black;
+   border: 1px solid green;
+}
         .input-container {
           display: -ms-flexbox; /* IE10 */
           display: flex;
@@ -31,10 +39,9 @@
         .btn {
           background-color: dodgerblue;
           color: white;
-          padding: 15px 20px;
           border: none;
           cursor: pointer;
-          width: 100%;
+          width: 20%;
           opacity: 0.9;
         }
         
@@ -42,42 +49,55 @@
           opacity: 1;
         }
         </style>
-       
+        <button ng-click="goBack();" style="width: 12%; margin-bottom:10px;" class="btn btn-outline-warning">Go Back</button>
         
         <div>
-                <form name="moduleDetail"  ng-controller="taskController" ng-submit="editTask()">
+                <form name="userForm"  ng-controller="taskController" ng-submit="editTask()">
                         <div class="card-header"><strong>Update Task</strong><span class="close">&times;</span></div>
                         <div class="card-body card-block">
                             <div class="form-group">
                                 <label for="company" class=" form-control-label"   >Task Name</label>
-                                <input type="text" name="title" id="company"   placeholder="{{userData.title}}"  ng-model="userData.title" class="form-control">
-                                <span style="color:red;" ng-show="moduleDetail.title.$dirty && moduleDetail.title.$invalid">Invalid Module Title</span>
+                                <input type="text" name="title" id="company"   placeholder="{{userData.title}}" required  ng-model="userData.title" class="form-control"
+                                ng-class="{'has-error' :  (userForm.title.$invalid&&userForm.title.$touched),'has-success' :  (!userForm.title.$invalid && userForm.title.$touched) }">
+                                
                                 
                             </div>
                             
                             <div class="form-group">
                                 <label for="street" class=" form-control-label">Description</label>
-                                <input type="text" id="street" placeholder="{{userData.description}}"  name="description" ng-model="userData.description" class="form-control">
-                                <span style="color:red" ng-show="moduleDetail.description.$dirty && moduleDetail.description.$invalid">Invalid Description</span>
+                                <input type="text" id="street" required placeholder="{{userData.description}}"  name="description" ng-model="userData.description" class="form-control"
+                                ng-class="{'has-error' :  (userForm.description.$invalid&&userForm.description.$touched),'has-success' :  (!userForm.description.$invalid && userForm.description.$touched) }">
+                                
                                
          
                             </div>
                             <div class="form-group">
-                              <label for="street" class=" form-control-label">Project Name</label>
-                              <input type="text" id="street" placeholder="userData.projectId"  name="projectName" ng-model="userData.projectId" class="form-control">
-                              <span style="color:red" ng-show="moduleDetail.projectName.$dirty && moduleDetail.projectName.$invalid">Invalid Project Name</span>
-                             
-       
+                              <label for="vat" class=" form-control-label">Projects</label>
+                              <select id="vat" name="project" ng-model="userData.project">
+                                      <option value="" selected disabled hidden>Choose here</option>
+                                  <option ng-repeat="projects in project" value="{{projects._id}}">{{projects.title}}</option>
+                              </select>
                           </div>
                           <div class="form-group">
-                                <label for="street" class=" form-control-label">Comment</label>
-                                <input type="text" id="street" placeholder="{{userData.commentId}}"  name="comment" ng-model="userData.commentId" class="form-control">
-                                <span style="color:red" ng-show="moduleDetail.comment.$dirty && moduleDetail.comment.$invalid">Invalid Comment</span>
-                               
-         
-                            </div>
-                            <button type="submit"  class="btn btn-outline-primary"> Update Task</button>
-                        </div>
+                              <label for="priority" class=" form-control-label">Priority</label>
+  
+                              <select id="priority"  required ng-model="userData.priority" name="priority"  ng-options="item for item in priority"></select>
+                          </div>
+                          <div class="form-group">
+                                  <label for="status" class=" form-control-label">Status</label>
+                                  <select id="status" name="status" required ng-model="userData.status" ng-options="item for item in status"></select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="assigning" class=" form-control-label">Assign To</label>
+                                  <select id="assigning" name="assigning" ng-model="userData.assigning" required>
+                                          <option value="" selected disabled hidden>Choose here</option>
+                                      <option ng-repeat="projects in data3" value="{{projects._id}}">{{projects.name}}</option>
+                                  </select>
+                              </div>
+                            <button type="submit" ng-disabled="userForm.title.$invalid||userForm.description.$invalid||userForm.project.$invalid||userForm.status.$invalid||userForm.assigning.$invalid||userForm.priority.$invalid" class="btn btn-outline-primary"> Update Task</button>
+                           
+                          </div>
+
                         
          
                        

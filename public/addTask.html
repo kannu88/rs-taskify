@@ -1,0 +1,70 @@
+
+
+<!-- Modal content -->
+<style>
+    .has-error {
+    color: red;
+    border: 1px solid red;
+}
+
+.has-success {
+    color: black;
+   border: 1px solid green;
+}
+</style>
+<div class="col-lg-12" style="float: center;">
+                <div class="card" >
+                    <form name="userForm"  ng-controller="taskController" ng-init="userData.priority='Medium';userData.status='Pending'" ng-submit="createTask()">
+                    <div class="card-header"><strong>Create Task</strong></div>
+                    <div class="card-body card-block">
+                        <div class="form-group">
+                            <label for="company" class=" form-control-label"   >Task Name</label>
+                            <input type="text" name="title" id="company" placeholder="Enter your Task name" ng-model="userData.title" class="form-control" required
+                            ng-class="{'has-error' :  (userForm.title.$invalid&&userForm.title.$touched),'has-success' :  (!userForm.title.$invalid && userForm.title.$touched) }">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="vat" class=" form-control-label">Priority</label>
+
+                            <select id="vat" required ng-model="userData.priority" name="priority"  ng-options="item for item in priority"></select>
+                        </div>
+                        <div class="form-group">
+                                <label for="status" class=" form-control-label">Status</label>
+                                <select id="status" name="status" required ng-model="userData.status" ng-options="item for item in status"></select>
+                            </div>
+                        <div class="form-group">
+                                <label for="project" class=" form-control-label">Projects</label>
+                                <select name="project" id="project" ng-model="userData.project" required>
+                                        <option value="" selected disabled hidden>Choose here</option>
+                                    <option ng-repeat="projects in project" value="{{projects._id}}">{{projects.title}}</option>
+                                </select>
+                            </div>
+                              
+                        <div class="form-group">
+                            <label for="street" class=" form-control-label">Description</label>
+                            <input type="text" id="street" placeholder="Enter Description of Task" name="description" ng-model="userData.description" required class="form-control"
+                            ng-class="{'has-error' :  (userForm.description.$invalid&&userForm.description.$touched),'has-success' :  (!userForm.description.$invalid && userForm.description.$touched) }">
+                            
+
+                        </div>
+                        <div class="form-group">
+                            <label for="assigning" class=" form-control-label">Assign To</label>
+                            <select id="assigning" name="assigning" ng-model="userData.assigning" required>
+                                    <option value="" selected disabled hidden>Choose here</option>
+                                <option ng-repeat="projects in data3" value="{{projects._id}}">{{projects.name}}</option>
+                            </select>
+                        </div>
+                        <button type="submit" ng-disabled="userForm.title.$invalid||userForm.description.$invalid||userForm.project.$invalid||userForm.status.$invalid||userForm.assigning.$invalid||userForm.priority.$invalid" class="btn btn-outline-primary">Create Task</button>
+                        <button type="button" ng-click="goBack();" class="btn btn-outline-warning">Go Back</button>
+                    </div>
+                    
+
+                   
+
+
+
+                    </form>
+                </div>
+                
+
+            </div>

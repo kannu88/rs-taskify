@@ -1,0 +1,103 @@
+<style>
+        .pagination {
+          display: inline-block;
+        }
+        
+        .pagination a {
+          color: black;
+          float: left;
+          padding: 8px 16px;
+          text-decoration: none;
+        }
+        
+        .pagination a.active {
+          background-color: #4CAF50;
+          color: white;
+        }
+        
+        .pagination a:hover:not(.active) {background-color: #ddd;}
+        .success{
+            color: white;
+  padding: 8px;
+  background-color: #4CAF50;
+        }
+        .danger{
+            color: white;
+  padding: 8px;
+  background-color: #f44336;;
+        }
+        .warning{
+            color: white;
+  padding: 8px;
+  background-color: #ff9800;
+        }
+        .active{
+            color: white;
+  padding: 8px;
+  background-color: #2196F3;
+        }
+        </style>
+        
+        <div>
+    <!--Create Task-->
+    
+    
+                <div class="orders">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="box-title">My Task</h4>
+                                    </div>
+                                    <div class="card-body--">
+                                        <div class="table-stats order-table ov-h">
+                                            <table class="table table-striped table-dark m-b-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="serial">S.No</th>
+                                                      
+                                                        
+                                                        <th>Title</th>
+                                                        <th>Project Name</th>
+                                                        <th>Status</th>
+                                                        <th>Creator</th>
+                                                        <th>View</th>
+                                                        <th>Modify</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="user in data2" >
+                                                        <td class="serial">{{$index+1}}</td>
+                                                        
+                                                        
+                                                        <td>  <span class="name">{{user.title}}</span> </td>
+                                                        <td> <span class="product">{{user.project.title}}</span> </td>
+                                                        <td> <label ng-class="{'warning': user.status == 'On Hold' , 'success': user.status == 'Completed',
+                                                            'active': user.status == 'Review', 'danger': user.status == 'Pending' } ">{{user.status}}</label></td>
+                                                        <td><span class="count">{{user.user.name
+                                                            }}</span></td>
+                                                        <td> <a href="#comment/1/{{user._id}}"><button class="editButton btn btn-primary">View</button></a></td>
+                                                        <td>
+                                                   
+                                                                <a href="#updateTask/{{user._id}}"><button class="editButton btn btn-primary">Edit</button></a>
+                                                              </td>
+                                                    </tr>
+                                                   
+                                                </tbody>
+                                            </table>
+                                        </div> 
+                                    
+                                    </div>
+                                </div> <!-- /.card -->
+                            </div>  <!-- /.col-lg-8 -->
+    
+                        </div>
+                    </div>
+                    <div  ng-controller="myTaskController">
+                        <ul  uib-pagination ng-click="pageChange();" total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true"  num-pages="numPages"></ul>
+                          
+                           </div>  
+        </div>
+        
+    
+    

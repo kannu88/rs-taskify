@@ -3505,7 +3505,8 @@ input[type="button"].btn-block {
   flex-direction: column;
   padding-left: 0;
   margin-bottom: 0;
-  list-style: none; }
+  list-style: none; 
+	float: right;}
   .navbar-nav .nav-link {
     padding-right: 0;
     padding-left: 0; }

@@ -7,12 +7,13 @@ var localSchema = new Schema({
     assigning:String,
     creator:String,
     watchlist:String,
-    priority:Number,
-    projectId:String,
-    moduleId:String,
+    priority:String,
     commentId:String,
     tags:String,
-    clientId:String
+    clientId:String,
+    user:{type: Schema.Types.ObjectId,ref:'users'},
+   project:{type: Schema.Types.ObjectId,ref:'project'},
+   module:{type: Schema.Types.ObjectId,ref: 'module'}
 
 })
 

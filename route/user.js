@@ -2,6 +2,22 @@ var express = require('express')
 var router = express.Router()
 var nodemailer = require('nodemailer')
 var app = express()
+var multer = require('multer');
+// var upload      = multer({ dest: 'uploads/',fileFilter:function(req,file,cb){
+//     console.log('file is',file)
+//     cb(null,true);
+// }
+// });
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+  })
+   
+  var upload = multer({ storage: storage })
 //for otp
 var otpGenerator = require('otp-generator');
 //for sending mail
@@ -16,7 +32,7 @@ var smtpTransport = nodemailer.createTransport({
 var jwt = require('jsonwebtoken');
 var ls = require('local-storage');
 console.log("user route called")
-
+var email="";
 var User = require('../model/userSchema')
 var forgotPassword = require('../model/fpSchema');
 // router.get('/', (req,res)=>
@@ -63,14 +79,15 @@ router.post('/insert', (req,res)=>
     }
     newUser.age = userData.age;
     newUser.DOB = userData.DOB;
-    
+    newUser.profilePicture = "download.png"
     newUser.save((err,doc)=>
     {
         if(err)
-        {
-            res.status(400).json({
+        {   console.log(err.name);
+            res.json({
                 success:false,
-                message:"data not saved"
+                message:"data not saved",
+                error:err.name
             })
             
         }
@@ -182,8 +199,7 @@ router.get('/paging',(req,res)=>
 
     var query ={};
     if(search){
-        query={'$or':[{name:new RegExp(search,'i')},
-        {email:new RegExp(email,'i')}]}
+        query={name:new RegExp(".*"+search+".*","i")}
     }
 
     if(sort)
@@ -197,6 +213,7 @@ router.get('/paging',(req,res)=>
     //          sort = -1
     //      }
          skipCondition.sort = sort;
+
     }
     if(pageNo<=0|| pageNo===0  )
     {
@@ -256,11 +273,14 @@ router.post('/login',(req,res)=>
                     expiresIn:'24h'
                 })
                 ls.set('token',token);
+                console.log(user._id);
                 console.log(ls.get('token'));
                 res.json({
                     success:true,
                     message:"enjoy your token",
                     token:token,
+                    id:user.id
+                    
                     
                 })
             }
@@ -333,7 +353,8 @@ router.post('/resetpassword', (req,res)=>
 
 router.get('/forgotPassword',(req,res)=>
 {  var fPassword = forgotPassword();
-        console.log(req.query.email)
+        console.log(req.query.email);
+        email = req.query.email;
     User.findOne({email:req.query.email},(err,doc)=>
     {
         if(err)
@@ -362,6 +383,25 @@ router.get('/forgotPassword',(req,res)=>
                 res.end("sent");
                  }
         });
+
+        forgotPassword.findOne({email:fPassword.email},(err,doc)=>{
+            if(doc){
+                forgotPassword.updateOne({email:fPassword.email},{$set:{otp:fPassword.otp}},(err,doc)=>{
+                    if(err){
+                        res.status(400).json({
+                            success:false,
+                            message:"Error in the otp updation"
+                        })
+                    }
+                    else{
+                        res.json({
+                            success:true,
+                            message:"OTP updated successfully"
+                        })
+                    }
+                })
+            }
+        else{
         fPassword.save((err,user)=>
         {
             if(err)
@@ -380,17 +420,20 @@ router.get('/forgotPassword',(req,res)=>
                 
             }
         })
+    }
+})
     }}
     )
 })
 
 router.post('/forgotPassword', (req,res)=>
-{   var newPassword1 = req.body.userData.newPassword
-    forgotPassword.findOne({otp:req.body.userData.otp},(err,doc)=>
+{   var newPassword1 = req.body.userData.newPassword;
+    console.log(email);
+    forgotPassword.findOne({otp:req.body.userData.otp,email:email},(err,doc)=>
     {   
-        if(err)
+        if(!doc)
         {   
-            res.status.json({
+            res.json({
                 success:false,
                 message:"error in the link"
             })
@@ -402,7 +445,7 @@ router.post('/forgotPassword', (req,res)=>
             }},{},(err,doc1)=>
             {
                 if(err)
-                {
+                {   
                     res.status(400).json({
                         success:false,
                         message:"password not changed"
@@ -483,4 +526,25 @@ router.post('/sendmail',function(req,res){
         }
       })
   })
+  router.post('/upload/:id',upload.single('file'),(req,res)=>{
+    console.log(req.file);
+    
+    User.update({_id:req.params.id},{$set:{
+         profilePicture:req.file.originalname}
+     },{},(err,doc)=>{
+         if(err){
+             res.status(400).json({
+                 success:false,
+                 message:"Error in uploading"
+             })
+         }
+         else{
+             res.json({
+                 success:true,
+                 message:"Picture Uploaded"
+             })
+         }
+     })
+
+})
 module.exports=router;

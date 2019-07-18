@@ -9,11 +9,12 @@ var commentRoutes = require('./route/comment')
 var projectRoutes = require('./route/project')
 var moduleRoutes = require('./route/module')
 var learnRoutes = require('./route/learn')
+var clientRoutes = require('./route/client')
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 var config = require('./model/config'); // get our config file
 app.use(bodyParser.urlencoded({extended:true}));
-
+app.use('/learn',learnRoutes);
 app.use(cors({
   'allowedHeaders': ['sessionId', 'Content-Type'],
   'exposedHeaders': ['sessionId'],
@@ -61,9 +62,9 @@ app.use(function(req, res, next) {
   
     }
   });
-  app.use('/learn',learnRoutes);
  
 app.use('/task',taskRoutes);
+app.use('/client',clientRoutes);
 app.use('/comment',commentRoutes);
 app.use('/project',projectRoutes);
 app.use('/module',moduleRoutes);

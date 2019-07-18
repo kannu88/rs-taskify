@@ -14,7 +14,7 @@ var Project = require('../model/projectSchema')
 router.post('/insert', (req,res)=>
 {
     var newUser = Project()
-   // console.log(req)
+   //console.log(req)
     var userData = req.body.userData;
     newUser.title = userData.title;
     
@@ -35,14 +35,8 @@ router.post('/insert', (req,res)=>
     }
     
     
-    newUser.clientId = userData.clientId;
-    if(!userData.clientId)
-    {
-        return res.status(400).json({
-            success:false,
-            message: 'Please enter clientId also'
-        })
-    }
+    newUser.client = userData.client;
+    
     newUser.description = userData.description;
     if(!userData.description)
     {
@@ -51,11 +45,15 @@ router.post('/insert', (req,res)=>
             message: 'Please enter description also'
         })
     }
-
+    newUser.user=userData.user;
+    Project.findOne({title:newUser.title,user:newUser.user},(err,doc)=>
+    {
+       if(!doc){
+    
     newUser.save((err,doc)=>
     {
         if(err)
-        {
+        {   console.log(err);
             res.status(400).json({
                 success:false,
                 message:"data not saved"
@@ -71,15 +69,25 @@ router.post('/insert', (req,res)=>
             })
         }
     })
+}
+else{
+    res.json({
+        success:false,
+        message:"alreadyExist"
+    })
+}
 })
-
+})
 router.put('/update/:id', (req,res)=>
 {    var userData = req.body.userData;
-    
+Project.findOne({title:userData.title,user:userData.user,_id:{'$ne':req.params.id}},(err,doc)=>{
+  
+    if(!doc){
+       
     Project.update({_id:req.params.id},{
         $set:{title:userData.title,
             status:userData.status,
-            clientId:userData.clientId,
+            client:userData.client,
     description:userData.description
 }},{},(err,doc)=>
     {
@@ -99,11 +107,19 @@ router.put('/update/:id', (req,res)=>
             })
         }
     })
+}
+else{
+    res.json({
+        success:false,
+        message:"alreadyExist"
+    })
+}
+})
 })
 
 router.get('/find/:id', (req,res)=>
 {
-    Project.find({_id:req.params.id},(err,doc)=>
+    Project.find({_id:req.params.id}).populate('client').populate('user').exec((err,doc)=>
     {
         if(err)
         {
@@ -158,6 +174,7 @@ router.get('/paging',(req,res)=>
 {
     var search = req.query.search;
     var clientId = req.query.clientId;
+    var userId = req.query.userId;
     var sort = req.query.sort;
     var pageNo = parseInt(req.query.pageNo);
     var size = parseInt(req.query.size);
@@ -168,10 +185,10 @@ router.get('/paging',(req,res)=>
 
     var query ={};
     if(search){
-        query={'$or':[{title:new RegExp(search,'i')},
-        {clientId:new RegExp(clientId,'i')}]}
+        query={title:new RegExp(".*"+search+".*","i")}
     }
-
+    if(userId){
+        query={user:userId}}
     if(sort)
     {
     //      if(sort==="asc")
@@ -192,7 +209,7 @@ router.get('/paging',(req,res)=>
         })
     }
   
-    Project.find(query,{},skipCondition,(err,doc)=>
+    Project.find(query,{},skipCondition).populate('user').populate('client').exec((err,doc)=>
     {
         if(err)
         {
@@ -202,12 +219,30 @@ router.get('/paging',(req,res)=>
             })
         }
         else{
+            
             res.json({
                 message:"paging successfull",
                 success:true,
                 doc:doc
             })
         }
+    })
+})
+router.get('/count',(req,res)=>{
+    var userId = req.query.userId;
+    Project.aggregate([{$group : {_id : "$status", count : {$sum : 1}}}]).exec((err,doc)=>{
+        if(err){
+            console.log(err);
+            res.status(400).json({
+                message:'not found anything',
+                success:false
+            })
+        }
+        else{res.json({
+            message:"found record",
+            success:true,
+            doc:doc
+        })}
     })
 })
 module.exports=router;

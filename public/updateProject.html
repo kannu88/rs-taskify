@@ -41,47 +41,57 @@
         .btn:hover {
           opacity: 1;
         }
+
+        
+        .has-error {
+    color: red;
+    border: 1px solid red;
+}
+
+.has-success {
+    color: black;
+   border: 1px solid green;
+}
         </style>
        
-        
-        <div>
-                <form name="projectDetail"  ng-controller="listController" ng-submit="editProject()">
+       <button ng-click="goBack();" style="width: 12%; margin-bottom: 10px;" class="btn btn-outline-warning">Go Back</button>
+        <div ng-controller="listController">
+                <form name="userForm"   ng-submit="editProject()">
                         <div class="card-header"><strong>Update Project</strong><span class="close">&times;</span></div>
                         <div class="card-body card-block">
                             <div class="form-group">
                                 <label for="company" class=" form-control-label"   >Project Name</label>
-                                <input type="text" name="title" id="company"   placeholder="Enter Project Name"  ng-model="userData.title" class="form-control">
-                                <span style="color:red;" ng-show="projectDetail.title.$dirty && projectDetail.title.$invalid">Invalid Project Title</span>
+                                <input type="text" id="company" name="title" id="company" required  placeholder="Enter Project Name"  ng-model="userData.title" class="form-control"
+                                ng-class="{'has-error' :  (userForm.title.$invalid&&userForm.title.$touched),'has-success' :  (!userForm.title.$invalid && userForm.title.$touched) }">
+                               
                                 
                             </div>
                             <div class="form-group">
-                                <label for="vat" class=" form-control-label">Client Name</label>
-                                <input type="text" id="vat"  placeholder="Enter Client" ng-model= "userData.clientId"  name="client" class="form-control">
-                                <span style="color:red;" ng-show="projectDetail.client.$dirty && projectDetail.client.$invalid">Invalid Name</span>
-                                
-                            </div>
+                              <label for="vat" class=" form-control-label">Clients</label>
+                              <select id="vat" ng-model="userData.client" required>
+                      
+                                  <option ng-model="userData.client" ng-repeat="projects in client" value="{{projects._id}}">{{projects.name}}</option>
+                              </select>
+                          </div>
                             <div class="form-group">
                                 <label for="street" class=" form-control-label">Description</label>
-                                <input type="text" id="street" placeholder="Enter the description"  name="description" ng-model="userData.description" class="form-control">
-                                <span style="color:red" ng-show="projectDetail.description.$dirty && projectDetail.description.$invalid">Invalid Description</span>
+                                <input type="text" id="street" placeholder="Enter the description" required  name="description" ng-model="userData.description" class="form-control"
+                                ng-class="{'has-error' :  (userForm.description.$invalid&&userForm.description.$touched),'has-success' :  (!userForm.description.$invalid && userForm.description.$touched) }">
+                              
                                
          
                             </div>
                             <div class="form-group">
-                              <label for="street" class=" form-control-label">Status</label>
-                              <input type="text" id="street" placeholder="Enter the Status"  name="description" ng-model="userData.status" class="form-control">
-                              <span style="color:red" ng-show="projectDetail.description.$dirty && projectDetail.description.$invalid">Invalid status</span>
-                             
-       
+                              <label for="status" class=" form-control-label">Status</label>
+                              <select id="status" ng-model="userData.status" required ng-options="item for item in status">{{userData.status}}</select>
+                              
                           </div>
-                            <button type="submit"  class="btn btn-outline-primary"> Update Project</button>
-                        </div>
+                          <button type="submit"  ng-disabled="userForm.description.$invalid||userForm.title.$invalid||userForm.client.$invalid||userForm.status.$invalid" style="width: 12%;"  class="btn btn-outline-primary"> Update Project</button>
+                          
+                         
+                      </form>
                         
-         
-                       
-         
-         
-         
-                        </form>
+
+                        
         </div>
         

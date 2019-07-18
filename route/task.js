@@ -13,6 +13,7 @@ router.post('/insert', (req,res)=>
 {
     var newTask = Task()
     var taskData = req.body.userData;
+    
     newTask.title = taskData.title;
     if(!taskData.title)
     {
@@ -55,23 +56,20 @@ router.post('/insert', (req,res)=>
     }
     newTask.watchlist = taskData.watchlist;
     newTask.priority = taskData.priority;
-    newTask.projectId = taskData.projectId;
-    if(!taskData.projectId)
-    {
-        return res.status(400).json({
-            success:false,
-            message: 'Please enter project ID also'
-        })
-    }
-    newTask.moduleId = taskData.moduleId;
     newTask.commentId = taskData.commentId;
     newTask.tags = taskData.tags;
     newTask.clientId = taskData.clientId;
-
+    newTask.user = taskData.user;
+    newTask.project = taskData.project;
+    newTask.module=taskData.module;
+    Task.findOne({title:newTask.title,project:newTask.project},(err,doc)=>
+    {
+        if(!doc){
+    
     newTask.save((err,doc)=>
     {
         if(err)
-        {
+        {   
             res.status(400).json({
                 success:false,
                 message:"task not aaded"
@@ -87,24 +85,36 @@ router.post('/insert', (req,res)=>
         }
     })
 
-
+}
+else{
+    console.log("Error")
+    res.json({
+        success:false,
+        message:"alreadyExist"
+    })
+}
+})
 })
 
 
 router.put('/update/:id',(req,res)=>
 {
     var taskData = req.body.userData;
+    Task.findOne({title:taskData.title,project:taskData.project,_id:{'$ne':req.params.id}},(err,doc)=>
+    {
+        if(!doc){
+
+        
+    
     Task.update({_id:req.params.id},
         {$set:{title:taskData.title,
         description:taskData.description,
     status:taskData.status,
-assigning:taskData.assigning,
-creator:taskData.creator,
 watchlist:taskData.watchlist,
 priority:taskData.priority,
-projectId:taskData.projectId,
-moduleId:taskData.moduleId,
-commentId:taskData.commentId,
+project:taskData.project,
+module:taskData.module,
+assigning:taskData.assigning,
 tags:taskData.tags,
 client:taskData.client}},{},(err,doc)=>
 {
@@ -123,11 +133,19 @@ client:taskData.client}},{},(err,doc)=>
         })
     }
 })
+}
+else{
+    res.json({
+        success:false,
+        message:"alreadyExist"
+    })
+}
+})
 })
 
 router.get('/find/:id', (req,res)=>
 {
-    Task.find({_id:req.params.id},(err,doc)=>
+    Task.find({_id:req.params.id}).populate('user').populate('project').populate('module').exec((err,doc)=>
     {
         if(err)
         {
@@ -150,10 +168,12 @@ router.get('/find/:id', (req,res)=>
 router.get('/paging',(req,res)=>
 {
     var search = req.query.search;
+ 
     var projectId = req.query.projectId;
     var moduleId = req.query.moduleId;
     var sort = req.query.sort;
-
+    var userId = req.query.userId;
+    var assigning =req.query.assigning;
     var pageNo = parseInt(req.query.pageNo);
     var size = parseInt(req.query.size);
 
@@ -163,10 +183,13 @@ router.get('/paging',(req,res)=>
 
     var query ={};
     if(search){
-        query={'$or':[{title:new RegExp(search,'i')},
-        {projectId:new RegExp(projectId,'i')},
-        {moduleId:new RegExp(moduleId,'i')}]}
+        query={title:new RegExp(".*"+search+".*","i")}
     }
+    if(userId)  
+     { query={user:userId}}
+     if(assigning){
+         query={assigning:assigning}
+     }
 
     if(sort)
     {
@@ -188,7 +211,7 @@ router.get('/paging',(req,res)=>
         })
     }
   
-    Task.find(query,{},skipCondition,(err,doc)=>
+    Task.find(query,{},skipCondition).populate('project').populate('user').populate('module').exec((err,doc)=>
     {
         if(err)
         {
@@ -198,6 +221,7 @@ router.get('/paging',(req,res)=>
             })
         }
         else{
+            
             res.json({
                 message:"paging successfull",
                 success:true,
@@ -206,6 +230,56 @@ router.get('/paging',(req,res)=>
         }
     })
 })
+router.get('/count',(req,res)=>{
+    var assigning = req.query.assigning;
+    Task.aggregate([{$match:{assigning:assigning}},{$group : {_id : "$status", count : {$sum : 1}}}]).exec((err,doc)=>{
+        if(err){
+            res.status(400).json({
+                message:'not found anything',
+                success:false
+            })
+        }
+        else{res.json({
+            message:"found record",
+            success:true,
+            doc:doc
+        })}
+    })
+})
+router.get('/count1',(req,res)=>{
+    
+    Task.aggregate([{$group : {_id : "$status", count : {$sum : 1}}}]).exec((err,doc)=>{
+        if(err){
+            res.status(400).json({
+                message:'not found anything',
+                success:false
+            })
+        }
+        else{res.json({
+            message:"found record",
+            success:true,
+            doc:doc
+        })}
+    })
+})
 
+router.get('/recenttask',(req,res)=>{
+    var assigning = req.query.assigning;
+    Task.find({assigning:assigning}).sort({_id:-1}).limit(5).populate('user').populate('project').exec((err,doc)=>{
+        if(err){
+            res.status(400).json({
+                success:false,
+                message:'not found any record'
+            })      }
+  
+            else{
+                res.json({
+                    success:true,
+                    message:'Task found',
+                    doc:doc
+                })
+            }
+    })  
+  })
 
 module.exports = router;

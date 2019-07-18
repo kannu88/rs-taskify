@@ -1,0 +1,305 @@
+<style>
+.success{
+            color: white;
+  padding: 8px;
+  background-color: #4CAF50;
+        }
+        .danger{
+            color: white;
+  padding: 8px;
+  background-color: #f44336;;
+        }
+        .warning{
+            color: white;
+  padding: 8px;
+  background-color: #ff9800;
+        }
+        .active{
+            color: white;
+  padding: 8px;
+  background-color: #2196F3;
+        }
+</style>
+<div controller="dashboardController">
+    <div class="container-fluid">
+        <!-- ============================================================== -->
+        <!-- Sales chart -->
+        <!-- ============================================================== -->
+        <div class="card-group">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex no-block align-items-center">
+                                <div>
+                                    <i class="mdi mdi-emoticon font-20 text-muted"></i>
+                                    <p class="font-16 m-b-5">Clients</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <h1 class="font-light text-right">{{clientCount}}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="progress">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 75%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+            <!-- Column -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex no-block align-items-center">
+                                <div>
+                                    <i class="mdi mdi-image font-20  text-muted"></i>
+                                    <p class="font-16 m-b-5">New Projects</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <h1 class="font-light text-right">{{projectCount}}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 60%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+            <!-- Column -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex no-block align-items-center">
+                                <div>
+                                    <i class="fa fa-calendar font-20 text-muted"></i>
+                                    <p class="font-16 m-b-5">My Task</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <h1 class="font-light text-right">{{taskCount}}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="progress">
+                                <div class="progress-bar bg-purple" role="progressbar" style="width: 65%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+            <!-- Column -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex no-block align-items-center">
+                                <div>
+                                    <i class="fa fa-laptop font-20 text-muted"></i>
+                                    <p class="font-16 m-b-5">Modules</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <h1 class="font-light text-right">{{moduleCount}}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="progress">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 70%; height: 6px;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- Sales chart -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Email campaign chart -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">My Task</h4>
+                        <div id="campaign" style="height: 168px; width: 100%;" class="m-t-10"></div>
+                        <!-- row -->
+                        <div class="row text-center text-lg-left">
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{taskpending}}%</h4>
+                                <span class="text-muted">Pending</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{taskcomplete}}%</h4>
+                                <span class="text-muted">Completed</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{taskreview}}%</h4>
+                                <span class="text-muted">Review</span>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{taskhold}}%</h4>
+                                <span class="text-muted">Hold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Task</h4>
+                        <div id="task" style="height: 168px; width: 100%;" class="m-t-10"></div>
+                        <!-- row -->
+                        <div class="row text-center text-lg-left">
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{pending}}%</h4>
+                                <span class="text-muted">Pending</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{complete}}%</h4>
+                                <span class="text-muted">Completed</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{review}}%</h4>
+                                <span class="text-muted">Review</span>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{hold}}%</h4>
+                                <span class="text-muted">Hold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Project</h4>
+                        <div id="project" style="height: 168px; width: 100%;" class="m-t-10"></div>
+                        <!-- row -->
+                        <div class="row text-center text-lg-left">
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{projectpending}}%</h4>
+                                <span class="text-muted">Pending</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{projectcomplete}}%</h4>
+                                <span class="text-muted">Completed</span>
+                            </div>
+                            <!-- column -->
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{projectreview}}%</h4>
+                                <span class="text-muted">Review</span>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="m-b-0 font-medium">{{projecthold}}%</h4>
+                                <span class="text-muted">Hold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- Email campaign chart -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Ravenue - page-view-bounce rate -->
+        <!-- ============================================================== -->
+        
+        <!-- ============================================================== -->
+        <!-- Ravenue - page-view-bounce rate -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- Recent comment and chats -->
+        <!-- ============================================================== -->
+        <div class="row">
+            <!-- column -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Recent Comments</h4>
+                    </div>
+                    <div class="comment-widgets scrollable">
+                        <!-- Comment Row -->
+                        <div class="d-flex flex-row comment-row m-t-0" ng-repeat="x in comment">
+                            <div class="p-2">
+                                <img src="/learn/download/C:\Users\hello\Desktop\RS-Projects\rs-taskify\uploads\{{x.user.profilePicture}}" alt="user" width="50" class="rounded-circle">
+                            </div>
+                            <div class="comment-text w-100">
+                                <h6 class="font-medium">{{x.user.name}}</h6>
+                                <span class="m-b-15 d-block">{{x.body}}</span>
+                                <div class="comment-footer">
+                                   
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Comment Row -->
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- column -->
+            
+            <div class="col-lg-6 col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <h4 class="card-title mb-0">Recent Task</h4>
+                            </div>
+                            
+                        </div>
+                    </div>
+                   
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="border-top-0">NAME</th>
+                                    <th class="border-top-0">STATUS</th>
+                                    <th class="border-top-0">Creator</th>
+                                    <th class="border-top-0">Project Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="x in recenttask">
+                                    
+                                    <td class="txt-oflo">{{x.title}}</td>
+                                    <td><span class="label label-success label-rounded" ng-class="{'warning': x.status == 'On Hold' , 'success': x.status == 'Completed',
+                                        'active': x.status == 'Review', 'danger': x.status == 'Pending' } ">{{x.status}}</span> </td>
+                                    <td class="txt-oflo">{{x.user.name}}</td>
+                                    <td><span class="font-medium">{{x.project.title}}</span></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+    
+</div>

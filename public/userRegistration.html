@@ -10,6 +10,7 @@
     <meta name="author" content="">
     <!--Add Angular file-->
     <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script> 
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon.png">
     <title>Add User to Taskify</title>
@@ -21,6 +22,17 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+<style>
+    .has-error {
+   color: red;
+   border: 1px solid red;
+}
+
+.has-success {
+   color: black;
+  border: 1px solid green;
+}
+   </style>
 </head>
 
 <body ng-app="mainApp" ng-controller="registerController">
@@ -53,42 +65,38 @@
                             <form class="form-horizontal m-t-20" name="userForm" ng-submit="addUser()">
                                 <div class="form-group row ">
                                     <div class="col-12 ">
-                                        <input class="form-control form-control-lg" type="text" required=" " placeholder="Name" ng-model="userData.name" pattern="[a-zA-Z ]{2,30}" name="name">
-                                        <span style="color:red" ng-show="userForm.name.$dirty && userForm.name.$invalid"></span>
-                                        <span style="color:red" ng-show="userForm.name.$error.pattern">Invalid Name</span>
-                                     <span style="color: red" ng-show="userForm.name.$touched && userForm.name.$invalid">Name Required</span>
+                                        <input class="form-control form-control-lg"
+                                         type="text" required=" " placeholder="Name" ng-model="userData.name" pattern="[a-zA-Z ]{2,30}" name="name"
+                                         ng-class="{'has-error' :  (userForm.name.$invalid&&userForm.name.$touched),'has-success' :  (!userForm.name.$invalid && userForm.name.$touched) }">
+                                        
                                     
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-12 ">
-                                        <input class="form-control form-control-lg" type="text" required=" " placeholder="Email" name="email" ng-model="userData.email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-                                        <span style="color:red" ng-show="userForm.email.$dirty && userForm.email.$invalid"></span>
-                                        <span style="color: red" ng-show="userForm.email.$touched && userForm.email.$invalid">Email Required</span>
-                                        <span style="color:red" ng-show="userForm.email.$error.pattern">Invalid email Address</span>
+                                        <input class="form-control form-control-lg" type="text" required=" " placeholder="Email" name="email" ng-model="userData.email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                        ng-class="{'has-error' :  (userForm.email.$invalid&&userForm.email.$touched),'has-success' :  (!userForm.email.$invalid && userForm.email.$touched) }">
                                         
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-12 ">
-                                        <input class="form-control form-control-lg" type="password" required=" " placeholder="Password" name="password" ng-model="userData.password">
-                                        <span style="color: red" ng-show="userForm.password.$dirty && userForm.password.$invalid"></span>
-                                        <span style="color:red" ng-show="userForm.password.$touched && userForm.password.$invalid">Password Required</span>
-                                    </div>
+                                        <input class="form-control form-control-lg" type="password" required=" " placeholder="Password" name="password" ng-model="userData.password"
+                                        ng-class="{'has-error' :  (userForm.password.$invalid&&userForm.password.$touched),'has-success' :  (!userForm.password.$invalid && userForm.password.$touched) }">
+                                        </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-12 ">
-                                        <input class="form-control form-control-lg" type="text" name="phoneNo" ng-model="userData.phoneNo"  pattern="[0-9]{10}" required=" " placeholder="Phone Number">
-                                        <span style="color:red" ng-show="userForm.phoneNo.$dirty && userForm.phoneNo.$invalid"></span>
-                                        <span style="color:red" ng-show="userForm.phoneNo.$touched && userForm.phoneNo.$invalid">Phone Number Required</span>
-                                        <span style="color:red" ng-show="userForm.phoneNo.$error.pattern">Invalid Phone Number</span>
+                                        <input class="form-control form-control-lg" type="text" name="phoneNo" 
+                                        ng-class="{'has-error' :  (userForm.phoneNo.$invalid&&userForm.phoneNo.$touched),'has-success' :  (!userForm.phoneNo.$invalid && userForm.phoneNo.$touched) }" ng-model="userData.phoneNo"  pattern="[0-9]{10}" required=" " placeholder="Phone Number">
+                                        
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                         <div class="col-12 ">
-                                            <input class="form-control form-control-lg" type="number" name="age" ng-model="userData.age"  pattern="[0-1]{1}[0-9]{0,2}" placeholder="Age">
-                                            <span style="color:red" ng-show="userForm.age.$dirty && userForm.age.$invalid"></span>
-                                            <span style="color:red" ng-show="userForm.age.$error.pattern">Invalid Age</span>
+                                            <input class="form-control form-control-lg" type="number" name="age" 
+                                            ng-class="{'has-error' :  (userForm.age.$invalid&&userForm.age.$touched),'has-success' :  (!userForm.age.$invalid && userForm.age.$touched) }" ng-model="userData.age"  pattern="[0-9]{0,2}" placeholder="Age">
+                                            
                                         </div>
                                     </div>
                                 <div class="form-group row">
@@ -101,10 +109,10 @@
                                 </div>
                                 <div class="form-group text-center ">
                                     <div class="col-xs-12 p-b-20 ">
-                                        <button class="btn btn-block btn-lg btn-info " type="submit" ng-disabled = "userForm.email.$dirty && userForm.email.$invalid 
-                                        || userForm.password.$dirty && userForm.password.$invalid ||
-                                        userForm.name.$dirty && userForm.name.$invalid || userForm.phoneNo.$dirty && userForm.phoneNo.$invalid
-                                        || userForm.age.$error.pattern">SIGN UP</button>
+                                        <button class="btn btn-block btn-lg btn-info " type="submit" ng-disabled = "userForm.email.$invalid 
+                                        || userForm.password.$invalid ||
+                                          userForm.name.$invalid || userForm.phoneNo.$invalid
+                                        || userForm.age.$invalid">SIGN UP</button>
                                     </div>
                                 </div>
                                 <div class="form-group m-b-0 m-t-10 ">
@@ -153,14 +161,36 @@
     mainApp.controller('registerController', function($scope, $http) {
     
       
-      var url = "http://localhost:3000/user/insert";
+      var url = "/user/insert";
         $scope.addUser =   function(){
           $http.post(url,
          {userData: $scope.userData}
           ).then(function(response){
           console.log(response);
           console.log($scope.userData);
-          window.location.href='index.html';
+          if(response.data.error==="ValidationError"){
+            Swal.fire({
+                position: 'center',
+                type: 'error',
+                title: 'Email Already Exist',
+                confirmButtonColor: '#3085d6',
+                showConfirmButton: true,
+              })
+          }
+          else{
+            Swal.fire({
+                position: 'center',
+                type: 'success',
+                title: 'User has been Added Successfully',
+                confirmButtonColor: '#3085d6',
+                showConfirmButton: true,
+              }).then((result) => {
+                if (result.value) {
+                  window.location.href="login.html"
+                }
+              })
+          }
+         
         })
         }
         
